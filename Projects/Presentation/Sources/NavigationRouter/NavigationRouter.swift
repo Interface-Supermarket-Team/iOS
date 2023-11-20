@@ -35,7 +35,7 @@ public final class NavigationRouter: ObservableObject {
 public extension NavigationRouter {
     enum PushRoute: Hashable {
         case main
-        case productDetail
+        case productDetail(String)
        
         @ViewBuilder
         func nextView(diContainer: AppDIContainerInterface, router: NavigationRouter) -> some View {

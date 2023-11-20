@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol MarketUseCaseInterface {
-    func fetchMarket(id: Int, completion: @escaping (Result<Market?, APIError>) -> Void) async
+    func fetchMarket(id: Int, completion: @escaping (Result<Market, APIError>) -> Void) async
 }
 
 public final class MarketUseCase: MarketUseCaseInterface {
@@ -18,7 +18,7 @@ public final class MarketUseCase: MarketUseCaseInterface {
         self.repository = repository
     }
     
-    public func fetchMarket(id: Int, completion: @escaping (Result<Market?, APIError>) -> Void) async {
+    public func fetchMarket(id: Int, completion: @escaping (Result<Market, APIError>) -> Void) async {
         await self.repository.fetchMarket(id: id, completion: completion)
     }
 }

@@ -16,7 +16,7 @@ public final class MarketRepository: MarketRepositoryInterface {
         self.dataSource = dataSource
     }
     
-    public func fetchMarket(id: Int, completion: @escaping (Result<Market?, APIError>) -> Void) async {
+    public func fetchMarket(id: Int, completion: @escaping (Result<Market, APIError>) -> Void) async {
         do {
             let entity = try await dataSource.fetchMarket(id: id).toEntity()
             completion(.success(entity))

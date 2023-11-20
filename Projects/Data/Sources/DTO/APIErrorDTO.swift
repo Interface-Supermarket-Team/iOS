@@ -19,6 +19,7 @@ enum APIErrorDTO {
         case is EncodingError:
             return .jsonEncodingError
         default:
+            print(error)
             return .unknown(nil)
         }
     }

@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol MarketRepositoryInterface {
-    func fetchMarket(id: Int, completion: @escaping (Result<Market?, APIError>) -> Void) async
+    func fetchMarket(id: Int, completion: @escaping (Result<Market, APIError>) -> Void) async
 }

@@ -16,7 +16,10 @@ let infoPlist: [String: Plist.Value] = [
             "CFBundleDevelopmentRegion" : "ko",
             "CFBundleLocalizations" : ["ko"],
             "ITSAppUsesNonExemptEncryption" : false,
-            "CFBundleDisplayName" : ""
+            "CFBundleDisplayName" : "",
+            "NSAppTransportSecurity" : [
+                "NSAllowsArbitraryLoads" : true
+            ]
 ]
 
 let target = Target.makeAppTargets(

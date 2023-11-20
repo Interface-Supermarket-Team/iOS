@@ -19,7 +19,3 @@ public struct MarkteDTO: Codable {
         return .init(id: self.id, name: self.name, info: self.info, category: self.category)
     }
 }
-
-extension MarkteDTO {
-    static let sample: MarkteDTO = .init(id: 1, name: "꼬치집", info: "", category: "분식")
-}

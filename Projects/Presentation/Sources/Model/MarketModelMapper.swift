@@ -9,12 +9,8 @@ import Foundation
 
 import Domain
 
-struct MarketModelMapper {
-    static func toMarketModel(entity: Market?) -> MarketModel? {
-        guard let entity else {
-            return nil
-        }
-        
+enum MarketModelMapper {
+    static func toMarketModel(entity: Market) -> MarketModel {
         return .init(id: entity.id, name: entity.name, info: entity.info, category: entity.category)
     }
 }
