@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension Color {
+public extension Color {
     static let grayWhite = DesignSystemAsset.grayWhite.swiftUIColor
     
     static let graySub = DesignSystemAsset.graySub.swiftUIColor

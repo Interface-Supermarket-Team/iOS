@@ -22,7 +22,7 @@ public final class AppDIContainer: AppDIContainerInterface {
         let marketRepository = MarketRepository(dataSource: marketDataSource)
         let marketUseCase = MarketUseCase(repository: marketRepository)
         
-        return MainViewModelWithRouter(router: router, useCase: marketUseCase)
+        return MainViewModelWithRouter(router: router, marketUseCase: marketUseCase)
     }
     
     public func rootViewModelDependencies(router: NavigationRouter) -> RootViewModel {

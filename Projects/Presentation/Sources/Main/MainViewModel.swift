@@ -12,9 +12,9 @@ import Domain
 public class MainViewModelWithRouter: MainViewModel {
     private let router: NavigationRouter?
     
-    public init(router: NavigationRouter? = nil, useCase: MarketUseCaseInterface? = nil) {
+    public init(router: NavigationRouter? = nil, marketUseCase: MarketUseCaseInterface? = nil) {
         self.router = router
-        super.init(useCase: useCase)
+        super.init(marketUseCase: marketUseCase)
     }
     
     override func tapProductButton() {
@@ -24,17 +24,17 @@ public class MainViewModelWithRouter: MainViewModel {
 }
 
 public class MainViewModel: ObservableObject {
-    private let useCase: MarketUseCaseInterface?
+    private let marketUseCase: MarketUseCaseInterface?
     
     @Published var marketModel: MarketModel?
     @Published var isLoading: Bool = false
     
-    public init(useCase: MarketUseCaseInterface?) {
-        self.useCase = useCase
+    public init(marketUseCase: MarketUseCaseInterface?) {
+        self.marketUseCase = marketUseCase
     }
     
     func fetchMarket(id: Int) {
-        guard let useCase else {
+        guard let marketUseCase else {
             marketModel = MarketModelMapper.toMarketModel(entity: Market.sample)
             return
         }
@@ -42,7 +42,7 @@ public class MainViewModel: ObservableObject {
         isLoading = true
         
         Task {
-            await useCase.fetchMarket(id: id) { [weak self] result in
+            await marketUseCase.fetchMarket(id: id) { [weak self] result in
                 switch result {
                 case .success(let entity):
                     self?.marketModel = MarketModelMapper.toMarketModel(entity: entity)
