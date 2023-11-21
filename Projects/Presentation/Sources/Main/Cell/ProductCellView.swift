@@ -19,7 +19,7 @@ struct ProductCellView: View {
     
     var body: some View {
         Button {
-            mainViewModel.tapProductButton(name: productModel.name)
+            mainViewModel.tapProductButton(id: productModel.id)
         } label: {
             ZStack(alignment: .bottomLeading) {
                 productImage

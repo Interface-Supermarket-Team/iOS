@@ -15,22 +15,24 @@ public class MainViewModelWithRouter: MainViewModel {
     public init(router: NavigationRouter? = nil,
                 marketUseCase: MarketUseCaseInterface? = nil,
                 productUseCase: ProductUseCaseInterface? = nil,
-                productCategoryUseCase: ProductCategoryUseCaseInterface? = nil
+                productCategoryUseCase: ProductCategoryUseCaseInterface? = nil,
+                basketUseCase: BasketUseCaseInterface? = nil
     ) {
         self.router = router
         super.init(marketUseCase: marketUseCase, 
                    productUseCase: productUseCase,
-                   productCategoryUseCase: productCategoryUseCase)
+                   productCategoryUseCase: productCategoryUseCase,
+                   basketUseCase: basketUseCase)
     }
     
-    override func tapMainProductButton(name: String) {
-        super.tapMainProductButton(name: name)
-        router?.triggerScreenTransition(route: .productDetail(name))
+    override func tapMainProductButton(id: Int) {
+        super.tapMainProductButton(id: id)
+        router?.triggerScreenTransition(route: .productDetail(id))
     }
     
-    override func tapProductButton(name: String) {
-        super.tapProductButton(name: name)
-        router?.triggerScreenTransition(route: .productDetail(name))
+    override func tapProductButton(id: Int) {
+        super.tapProductButton(id: id)
+        router?.triggerScreenTransition(route: .productDetail(id))
     }
 }
 
@@ -38,6 +40,7 @@ public class MainViewModel: ObservableObject {
     private let marketUseCase: MarketUseCaseInterface?
     private let productUseCase: ProductUseCaseInterface?
     private let productCategoryUseCase: ProductCategoryUseCaseInterface?
+    private let basketUseCase: BasketUseCaseInterface?
     
     @Published var marketModel: MarketModel?
     @Published var marketModelIsLoading: Bool = false
@@ -47,13 +50,16 @@ public class MainViewModel: ObservableObject {
     @Published var mainProductModelsIsLoading: Bool = false
     @Published var productCategoryModels: [ProductCategoryModel]?
     @Published var productCategoryModelsIsLoading: Bool = false
+    @Published var basketModel: BasketModel?
     
     public init(marketUseCase: MarketUseCaseInterface?, 
                 productUseCase: ProductUseCaseInterface?,
-                productCategoryUseCase: ProductCategoryUseCaseInterface?) {
+                productCategoryUseCase: ProductCategoryUseCaseInterface?,
+                basketUseCase: BasketUseCaseInterface?) {
         self.marketUseCase = marketUseCase
         self.productUseCase = productUseCase
         self.productCategoryUseCase = productCategoryUseCase
+        self.basketUseCase = basketUseCase
     }
     
     func fetchMarket(id: Int) {
@@ -65,11 +71,11 @@ public class MainViewModel: ObservableObject {
         marketModelIsLoading = true
         
         Task {
-            await marketUseCase.fetchMarket(id: id) { [weak self] result in
+            await marketUseCase.fetchMarket(id: id) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let entity):
-                        self?.marketModel = MarketModelMapper.toMarketModel(entity: entity)
+                        self.marketModel = MarketModelMapper.toMarketModel(entity: entity)
                     case .failure(let failure):
                         print("\(#function) -> \(failure)")
                     }
@@ -77,9 +83,7 @@ public class MainViewModel: ObservableObject {
             }
         }
         
-        withAnimation(.smooth) {
-            marketModelIsLoading = false
-        }
+        marketModelIsLoading = false
     }
     
     func fetchProducts() {
@@ -93,11 +97,11 @@ public class MainViewModel: ObservableObject {
         productModelsIsLoading = true
         
         Task {
-            await productUseCase.fetchProducts { [weak self] result in
+            await productUseCase.fetchProducts { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let entity):
-                        self?.productModels = entity.map { product in
+                        self.productModels = entity.map { product in
                             return ProductModelMapper.toProductModels(entity: product)
                         }
                     case .failure(let failure):
@@ -107,9 +111,7 @@ public class MainViewModel: ObservableObject {
             }
         }
         
-        withAnimation(.smooth) {
-            productModelsIsLoading = false
-        }
+        productModelsIsLoading = false
     }
     
     func fetchMainProducts() {
@@ -124,11 +126,11 @@ public class MainViewModel: ObservableObject {
         mainProductModelsIsLoading = true
         
         Task {
-            await productUseCase.fetchMainProducts { [weak self] result in
+            await productUseCase.fetchMainProducts { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let entity):
-                        self?.mainProductModels = entity.map { product in
+                        self.mainProductModels = entity.map { product in
                             return ProductModelMapper.toProductModels(entity: product)
                         }
                     case .failure(let failure):
@@ -138,9 +140,7 @@ public class MainViewModel: ObservableObject {
             }
         }
         
-        withAnimation(.smooth) {
-            mainProductModelsIsLoading = false
-        }
+        mainProductModelsIsLoading = false
     }
     
     func fetchCategories() {
@@ -155,11 +155,11 @@ public class MainViewModel: ObservableObject {
         productCategoryModelsIsLoading = true
         
         Task {
-            await productCategoryUseCase.fetchCategories { [weak self] result in
+            await productCategoryUseCase.fetchCategories { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let entity):
-                        self?.productCategoryModels = entity.map { category in
+                        self.productCategoryModels = entity.map { category in
                             return ProductCategoryModelMapper.toProductCategoryModel(entity: category)
                         }
                     case .failure(let failure):
@@ -169,9 +169,8 @@ public class MainViewModel: ObservableObject {
             }
         }
         
-        withAnimation(.smooth) {
-            productCategoryModelsIsLoading = false
-        }
+        
+        productCategoryModelsIsLoading = false
     }
     
     func fetchProductsCategory(name: String) {
@@ -185,11 +184,11 @@ public class MainViewModel: ObservableObject {
         productModelsIsLoading = true
         
         Task {
-            await productUseCase.fetchProductsCategory(name: name) { [weak self] result in
+            await productUseCase.fetchProductsCategory(name: name) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let entity):
-                        self?.productModels = entity.map { product in
+                        self.productModels = entity.map { product in
                             return ProductModelMapper.toProductModels(entity: product)
                         }
                     case .failure(let failure):
@@ -199,12 +198,28 @@ public class MainViewModel: ObservableObject {
             }
         }
         
-        withAnimation(.smooth) {
-            productModelsIsLoading = false
+        productModelsIsLoading = false
+    }
+    
+    func fetchBasket() {
+        Task {
+            await basketUseCase?.fetchBasket { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let entity):
+                        withAnimation(.snappy) {
+                            self.basketModel = BasketModelMapper.toBasketModel(entity: entity)
+                            print(self.basketModel)
+                        }
+                    case .failure(let failure):
+                        print("\(#function) -> \(failure)")
+                    }
+                }
+            }
         }
     }
     
-    func tapMainProductButton(name: String) {}
+    func tapMainProductButton(id: Int) {}
     
-    func tapProductButton(name: String) {}
+    func tapProductButton(id: Int) {}
 }

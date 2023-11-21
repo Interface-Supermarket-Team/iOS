@@ -15,6 +15,7 @@ enum APIErrorDTO {
         case is APIError:
             return error as! APIError
         case is DecodingError:
+            print(error)
             return .jsonDecodingError
         case is EncodingError:
             return .jsonEncodingError

@@ -27,6 +27,10 @@ public final class NavigationRouter: ObservableObject {
         nextTransitionRoute = route
     }
     
+    public func closeScreen() {
+        navigationPath.removeLast()
+    }
+    
     public func nextTransitionScreen() -> some View {
         nextTransitionRoute.nextView(diContainer: self.diContainer, router: self)
     }
@@ -35,15 +39,15 @@ public final class NavigationRouter: ObservableObject {
 public extension NavigationRouter {
     enum PushRoute: Hashable {
         case main
-        case productDetail(String)
+        case productDetail(Int)
        
         @ViewBuilder
         func nextView(diContainer: AppDIContainerInterface, router: NavigationRouter) -> some View {
             switch self {
             case .main:
                 MainView(viewModel: diContainer.mainViewModelDependencies(router: router))
-            case .productDetail:
-                EmptyView()
+            case .productDetail(let id):
+                ProductDetailView(viewModel: diContainer.productDetialViewModelDependencies(router: router), productDetailID: id)
             }
         }
     }

@@ -28,15 +28,6 @@ public final class ProductRepository: ProductRepositoryInterface {
         }
     }
     
-    public func fetchProduct(name: String, completion: @escaping (Result<Product, APIError>) -> Void) async {
-        do {
-            let entity = try await dataSource.fetchProduct(name: name).toEntity()
-            completion(.success(entity))
-        } catch {
-            completion(.failure(APIErrorDTO.convert(error: error)))
-        }
-    }
-    
     public func fetchMainProducts(completion: @escaping (Result<[Product], APIError>) -> Void) async {
         do {
             let entity = try await dataSource.fetchMainProducts().map { productDTO in

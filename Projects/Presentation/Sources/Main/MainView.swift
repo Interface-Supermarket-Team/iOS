@@ -19,24 +19,41 @@ struct MainView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                numberOfWaiting(number: 5)
-                
-                mainProductList
-                
-                searchButton
-                
-                categoryList
-                
-                productList
-                
-                Spacer()
+        GeometryReader { reader in
+            ScrollView {
+                VStack(spacing: 0) {
+                    numberOfWaiting(number: 5)
+                    
+                    mainProductList
+                    
+                    searchButton
+                    
+                    categoryList
+                    
+                    productList
+                    
+                    
+                }
+                .padding(.top, reader.safeAreaInsets.top)
             }
-        }
-        .background(Color.background)
-        .overlay(alignment: .top) {
-            GeometryReader { reader in
+            .background {
+                VStack {
+                    Spacer()
+                    
+                    HStack {
+                        Spacer()
+                    }
+                }
+                .background(Color.white)
+            }
+            .overlay(alignment: .bottom) {
+                if let basket = viewModel.basketModel, !basket.product.isEmpty {
+                    basketBanner(basket: basket)
+                        .transition(.move(edge: .bottom))
+                }
+            }
+            .ignoresSafeArea()
+            .overlay(alignment: .top) {
                 ZStack(alignment: .top) {
                     navigationBackground
                     
@@ -48,12 +65,14 @@ struct MainView: View {
                 }
                 .frame(height: reader.safeAreaInsets.top + 20)
             }
-        }
-        .onAppear {
-            viewModel.fetchMarket(id: 1)
-            viewModel.fetchMainProducts()
-            viewModel.fetchProducts()
-            viewModel.fetchCategories()
+            
+            .onAppear {
+                viewModel.fetchMarket(id: 1)
+                viewModel.fetchMainProducts()
+                viewModel.fetchProducts()
+                viewModel.fetchCategories()
+                viewModel.fetchBasket()
+            }
         }
     }
     
@@ -255,6 +274,44 @@ struct MainView: View {
             }
         }
         .padding(.horizontal, 24)
+    }
+    
+    @ViewBuilder
+    private func basketBanner(basket: BasketModel) -> some View {
+        HStack(spacing: 8) {
+            Text("총 금액")
+                .font(.system(size: 18))
+                .fontWeight(.medium)
+                .foregroundStyle(Color.graySub)
+            
+            Spacer()
+            
+            Text("\(basket.totalprice)원")
+                .font(.system(size: 22))
+                .fontWeight(.bold)
+                .foregroundStyle(Color.white)
+            
+            Button {
+                
+            } label: {
+                Text("주문하러 가기")
+                    .font(.system(size: 14))
+                    .fontWeight(.medium)
+                    .foregroundStyle(Color.black)
+                    .padding(16)
+                    .background {
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(Color.white)
+                    }
+            }
+        }
+        .padding(.top, 24)
+        .padding(.bottom, 44)
+        .padding(.horizontal, 16)
+        .background {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color.black)
+        }
     }
 }
 

@@ -17,6 +17,10 @@ public final class AppDIContainer: AppDIContainerInterface {
         return NavigationRouter(diContainer: self)
     }
     
+    public func rootViewModelDependencies(router: NavigationRouter) -> RootViewModel {
+        return RootViewModel(router: router)
+    }
+    
     public func mainViewModelDependencies(router: NavigationRouter) -> MainViewModel {
         let marketDataSource = MarketDataSource()
         let marketRepository = MarketRepository(dataSource: marketDataSource)
@@ -30,14 +34,29 @@ public final class AppDIContainer: AppDIContainerInterface {
         let productCategoryRepository = ProductCategoryRepository(dataSource: productCategoryDataSource)
         let productCategoryUseCase = ProductCategoryUseCase(repository: productCategoryRepository)
         
+        let basketDataSource = BasketDataSource()
+        let basketRepository = BasketRepository(dataSource: basketDataSource)
+        let basketUseCase = BasketUseCase(repository: basketRepository)
+        
         return MainViewModelWithRouter(router: router,
                                        marketUseCase: marketUseCase,
                                        productUseCase: productUseCase,
-                                       productCategoryUseCase: productCategoryUseCase)
+                                       productCategoryUseCase: productCategoryUseCase,
+                                       basketUseCase: basketUseCase)
     }
     
-    public func rootViewModelDependencies(router: NavigationRouter) -> RootViewModel {
-        return RootViewModel(router: router)
+    public func productDetialViewModelDependencies(router: NavigationRouter) -> ProductDetailViewModel {
+        let productDetailDataSource = ProductDetailDataSource()
+        let productDetailRepository = ProductDetailRepository(dataSource: productDetailDataSource)
+        let productDetailUseCase = ProductDetailUseCase(repository: productDetailRepository)
+        
+        let basketRequestDataSource = BasketRequestDataSource()
+        let basketRequestRepository = BasketRequestRepository(dataSource: basketRequestDataSource)
+        let basketRequestUseCase = BasketRequestUseCase(repository: basketRequestRepository)
+        
+        return ProductDetailViewModelWithRouter(router: router,
+                                                productDetailUseCase: productDetailUseCase,
+                                                basketRequestUseCase: basketRequestUseCase)
     }
 }
     
